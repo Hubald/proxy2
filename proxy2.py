@@ -27,7 +27,7 @@ def join_with_script_dir(path):
 
 
 class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
-    address_family = socket.AF_INET6
+    address_family = socket.AF_INET
     daemon_threads = True
 
     def handle_error(self, request, client_address):
@@ -371,8 +371,8 @@ def test(HandlerClass=ProxyRequestHandler, ServerClass=ThreadingHTTPServer, prot
     if sys.argv[1:]:
         port = int(sys.argv[1])
     else:
-        port = 8080
-    server_address = ('::1', port)
+        port = 8081
+    server_address = ('0.0.0.0', port)
 
     HandlerClass.protocol_version = protocol
     httpd = ServerClass(server_address, HandlerClass)
