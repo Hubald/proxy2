@@ -1,7 +1,7 @@
 # proxy2
 
 HTTP/HTTPS proxy in a single python script
-
+#Edit for acunetix
 
 ## Features
 
