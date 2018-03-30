@@ -48,6 +48,11 @@ $ ./setup_https_intercept.sh
 ```
 
 Through the proxy, you can access http://proxy2.test/ and install the CA certificate in the browsers.
+Try using curl with https proxy, you need using the ca which proxy2 created.
+
+```
+$ https_proxy=localhost:8080 curl --cacert ./ca.crt https://www.baidu.com/
+```
 
 
 ## Customization
