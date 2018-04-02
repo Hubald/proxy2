@@ -239,6 +239,8 @@ class ProxyRequestHandler(BaseHTTPRequestHandler):
     def encode_content_body(self, text, encoding):
         if encoding == 'identity':
             data = text
+        elif encoding in ('utf-8', 'UTF-8'):
+            data = text
         elif encoding in ('gzip', 'x-gzip'):
             io = StringIO()
             with gzip.GzipFile(fileobj=io, mode='wb') as f:
@@ -372,7 +374,7 @@ def test(HandlerClass=ProxyRequestHandler, ServerClass=ThreadingHTTPServer, prot
         port = int(sys.argv[1])
     else:
         port = 8080
-    server_address = ('::1', port)
+    server_address = ('::', port)
 
     HandlerClass.protocol_version = protocol
     httpd = ServerClass(server_address, HandlerClass)
