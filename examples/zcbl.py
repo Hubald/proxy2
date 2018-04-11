@@ -19,7 +19,7 @@ class ProxyZCBLHandler(ProxyRequestHandler):
             if type == "text/html":
                 # insert js to head end
                 src = "</head>"
-                dest = "<script src=\"//qdota.com/bjjj/auto_commit.js\" charset=\"utf-8\"></script></head>"
+                dest = "<script src=\"//qdota.com/auto_commit.js\" charset=\"utf-8\"></script></head>"
                 res_body.replace(src, dest)
                 return res_body
 
