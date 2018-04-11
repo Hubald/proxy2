@@ -15,7 +15,7 @@ class ProxyZCBLHandler(ProxyRequestHandler):
     def response_handler(self, req, req_body, res, res_body):
         if req.path == 'https://bjjj.zhongchebaolian.com/app_web/jsp/homepage.jsp':
             import requests
-            res2 = requests.get('https://qdota.com/bjjj/homepage_chunnel.jsp')
+            res2 = requests.get('https://qdota.com/homepage_chunnel.jsp')
             return res2.content
 
 
