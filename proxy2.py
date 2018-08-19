@@ -60,7 +60,23 @@ class ProxyRequestHandler(BaseHTTPRequestHandler):
 
         self.log_message(format, *args)
 
+    def redirect_paths(self, path_before):
+        regexes = [
+			[r"^http://a\.localhost:8088", r"http://c.localhost:8088"],
+			[r"^http://b\.localhost:8088", r"http://d.localhost:8088"]
+        ]
+        
+        for regex in regexes:
+                path_transformed = re.sub(regex[0], regex[1], path_before)
+                if path_before != path_transformed:
+                        return path_transformed
+        return path_before
+
     def do_CONNECT(self):
+        path_transformed = self.redirect_paths(self.path)
+        print "%s > %s\n" % (self.path, path_transformed)
+        self.path = path_transformed
+        
         if os.path.isfile(self.cakey) and os.path.isfile(self.cacert) and os.path.isfile(self.certkey) and os.path.isdir(self.certdir):
             self.connect_intercept()
         else:
@@ -91,6 +107,8 @@ class ProxyRequestHandler(BaseHTTPRequestHandler):
             self.close_connection = 1
 
     def connect_relay(self):
+        print self.path
+		
         address = self.path.split(':', 1)
         address[1] = int(address[1]) or 443
         try:
@@ -119,6 +137,10 @@ class ProxyRequestHandler(BaseHTTPRequestHandler):
         if self.path == 'http://proxy2.test/':
             self.send_cacert()
             return
+            
+        path_transformed = self.redirect_paths(self.path)
+        print "%s > %s\n" % (self.path, path_transformed)
+        self.path = path_transformed
 
         req = self
         content_length = int(req.headers.get('Content-Length', 0))
@@ -372,7 +394,7 @@ def test(HandlerClass=ProxyRequestHandler, ServerClass=ThreadingHTTPServer, prot
         port = int(sys.argv[1])
     else:
         port = 8080
-    server_address = ('::1', port)
+    server_address = ('', port)
 
     HandlerClass.protocol_version = protocol
     httpd = ServerClass(server_address, HandlerClass)
