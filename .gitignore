@@ -1,1 +1,7 @@
+*.key
+*.pyc
+*.crt
+tmp.conf
+certs/
+mongo-data/
 .idea/
