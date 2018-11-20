@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import argparse
 import sys
 import os
 import socket
@@ -381,15 +382,16 @@ class ProxyRequestHandler(BaseHTTPRequestHandler):
         self.print_info(req, req_body, res, res_body)
 
 
-def test(HandlerClass=ProxyRequestHandler, ServerClass=ThreadingHTTPServer, protocol="HTTP/1.1"):
-    if sys.argv[1:]:
-        port = int(sys.argv[1])
-    else:
-        port = 8080
-    server_address = ('localhost', port)
+def main(args=None):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-H', '--host', default='localhost')
+    parser.add_argument('-p', '--port', type=int, default=8080)
+    parser.add_argument('-P', '--protocol', default='HTTP/1.1')
+    pargs = parser.parse_args(args)
 
-    HandlerClass.protocol_version = protocol
-    httpd = ServerClass(server_address, HandlerClass)
+    ProxyRequestHandler.protocol_version = pargs.protocol
+    httpd = ThreadingHTTPServer(server_address=(pargs.host, pargs.port),
+                                RequestHandlerClass=ProxyRequestHandler)
 
     sa = httpd.socket.getsockname()
     print("Serving HTTP Proxy on {} port {} ...".format(sa[0], sa[1]))
@@ -397,4 +399,4 @@ def test(HandlerClass=ProxyRequestHandler, ServerClass=ThreadingHTTPServer, prot
 
 
 if __name__ == '__main__':
-    test()
+    main()
