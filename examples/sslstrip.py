@@ -23,4 +23,4 @@ class SSLStripRequestHandler(ProxyRequestHandler):
 
 
 if __name__ == '__main__':
-    test(HandlerClass=SSLStripRequestHandler)
+    start_server(HandlerClass=SSLStripRequestHandler)

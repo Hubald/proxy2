@@ -397,6 +397,14 @@ class ProxyRequestHandler(BaseHTTPRequestHandler):
         self.print_info(req, req_body, res, res_body)
 
 
+def start_server(HandlerClass=ProxyRequestHandler, ServerClass=ThreadingHTTPServer, server_address=('localhost', 8080), protocol="HTTP/1.1"):
+    HandlerClass.protocol_version = protocol
+    httpd = ServerClass(server_address=server_address, RequestHandlerClass=HandlerClass)
+
+    sa = httpd.socket.getsockname()
+    print("Serving HTTP Proxy on {} port {} ...".format(sa[0], sa[1]))
+    httpd.serve_forever()
+
 def main(args=None):
     parser = argparse.ArgumentParser()
     parser.add_argument('-H', '--host', default='localhost')
@@ -404,14 +412,7 @@ def main(args=None):
     parser.add_argument('-P', '--protocol', default='HTTP/1.1')
     pargs = parser.parse_args(args)
 
-    ProxyRequestHandler.protocol_version = pargs.protocol
-    httpd = ThreadingHTTPServer(server_address=(pargs.host, pargs.port),
-                                RequestHandlerClass=ProxyRequestHandler)
-
-    sa = httpd.socket.getsockname()
-    print("Serving HTTP Proxy on {} port {} ...".format(sa[0], sa[1]))
-    httpd.serve_forever()
-
+    start_server(server_address=(pargs.host, pargs.port), HandlerClass=ProxyRequestHandler, protocol=pargs.protocol)
 
 if __name__ == '__main__':
     main()

@@ -7,4 +7,4 @@ class UAChangerRequestHandler(ProxyRequestHandler):
 
 
 if __name__ == '__main__':
-    test(HandlerClass=UAChangerRequestHandler)
+    start_server(HandlerClass=UAChangerRequestHandler)
