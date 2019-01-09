@@ -248,6 +248,8 @@ class ProxyRequestHandler(BaseHTTPRequestHandler):
     def encode_content_body(self, text, encoding):
         if encoding == 'identity':
             data = text
+        elif encoding in ('utf-8', 'UTF-8'):
+            data = text
         elif encoding in ('gzip', 'x-gzip'):
             io = StringIO()
             with gzip.GzipFile(fileobj=io, mode='wb') as f:
