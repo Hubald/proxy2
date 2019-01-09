@@ -71,7 +71,21 @@ class ProxyRequestHandler(BaseHTTPRequestHandler):
 
         self.log_message(format, *args)
 
+    def redirect_paths(self, path_before):
+        regexes = [
+			#[r"^http://a\.localhost:8088", r"http://c.localhost:8088"],
+        ]
+        
+        for regex in regexes:
+                path_transformed = re.sub(regex[0], regex[1], path_before)
+                if path_before != path_transformed:    
+                    print("redirect {} > {}\n".format(self.path, path_transformed))
+                    return path_transformed
+        return path_before
+
     def do_CONNECT(self):
+        self.path = self.redirect_paths(self.path)
+
         if os.path.isfile(self.cakey) and os.path.isfile(self.cacert) and os.path.isfile(self.certkey) and os.path.isdir(self.certdir):
             self.connect_intercept()
         else:
@@ -141,6 +155,8 @@ class ProxyRequestHandler(BaseHTTPRequestHandler):
         if self.path == 'http://proxy2.test/':
             self.send_cacert()
             return
+
+        self.path = self.redirect_paths(self.path)
 
         req = self
         content_length = int(req.headers.get('Content-Length', 0))
